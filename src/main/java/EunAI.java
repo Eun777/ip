@@ -3,6 +3,8 @@ public class EunAI {
     public static void main(String[] args) {
 
         Scanner scanner = new Scanner(System.in);
+        String[] taskList = new String[100];
+        int maxIndex = -1;
 
 
         System.out.println("____________________________________________________________");
@@ -18,9 +20,18 @@ public class EunAI {
                 System.out.println("Bye. Hope to see you again soon!");
                 System.out.println("____________________________________________________________");
                 break;
-            } else {
+            } else if (input.equals("list")) {
                 System.out.println("____________________________________________________________");
-                System.out.println(input);
+                for (int i = 0; i <= maxIndex; i++) {
+                    System.out.print(i + 1);
+                    System.out.println(". " + taskList[i]);
+                }
+                System.out.println("____________________________________________________________");
+            } else {
+                taskList[maxIndex + 1] = input;
+                maxIndex++;
+                System.out.println("____________________________________________________________");
+                System.out.println("added: " + input);
                 System.out.println("____________________________________________________________");
             }
         }
