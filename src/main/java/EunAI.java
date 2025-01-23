@@ -75,38 +75,57 @@ public class EunAI {
                     System.out.println("    ____________________________________________________________");
                 }
             } else if (input.startsWith("todo")) {
-                taskList[maxIndex + 1] = new ToDo(input);
-                maxIndex++;
-                System.out.println("    ____________________________________________________________");
-                System.out.println("    Added the task! Remember to do it!");
-                System.out.println("    " + taskList[maxIndex].getTaskString());
-                System.out.println("    You have " + (maxIndex + 1) + " scheduled tasks and events.");
-                System.out.println("    ____________________________________________________________");
+                if (input.length() <= 5) {
+                    System.out.println("    ____________________________________________________________");
+                    System.out.println("    OOPS!!! The description of a todo cannot be empty.");
+                    System.out.println("    ____________________________________________________________");
+                } else {
+                    maxIndex++;
+                    System.out.println("    ____________________________________________________________");
+                    System.out.println("    Added the task! Remember to do it!");
+                    System.out.println("    " + taskList[maxIndex].getTaskString());
+                    System.out.println("    You have " + (maxIndex + 1) + " scheduled tasks and events.");
+                    System.out.println("    ____________________________________________________________");
+                }
             } else if (input.startsWith("deadline")) {
-                String details = input.substring(9).trim();
-                String[] parts = details.split(" /by ");
-                taskList[maxIndex + 1] = new Deadline(parts[0], parts[1]);
-                maxIndex++;
-                System.out.println("    ____________________________________________________________");
-                System.out.println("    Added the task! Stick to the deadline please :) ");
-                System.out.println("    " + taskList[maxIndex].getTaskString());
-                System.out.println("    You have " + (maxIndex + 1) + " scheduled tasks and events.");
-                System.out.println("    ____________________________________________________________");
+                if (input.length() <= 9) {
+                    System.out.println("    ____________________________________________________________");
+                    System.out.println("    OOPS!!! The description of a task with a deadline cannot be empty.");
+                    System.out.println("    ____________________________________________________________");
+                } else {
+                    String details = input.substring(9).trim();
+                    String[] parts = details.split(" /by ");
+                    taskList[maxIndex + 1] = new Deadline(parts[0], parts[1]);
+                    maxIndex++;
+                    System.out.println("    ____________________________________________________________");
+                    System.out.println("    Added the task! Stick to the deadline please :) ");
+                    System.out.println("    " + taskList[maxIndex].getTaskString());
+                    System.out.println("    You have " + (maxIndex + 1) + " scheduled tasks and events.");
+                    System.out.println("    ____________________________________________________________");
+                }
             } else if (input.startsWith("event")) {
-                String details = input.substring(6).trim();
-                String[] parts = details.split(" /from | /to ");
-                String description = parts[0];
-                String from = parts[1];
-                String to = parts[2];
-                taskList[maxIndex + 1] = new Event(description, from, to);
-                maxIndex++;
-                System.out.println("    ____________________________________________________________");
-                System.out.println("    I have scheduled the event for you!");
-                System.out.println("    " + taskList[maxIndex].getTaskString());
-                System.out.println("    You have " + (maxIndex + 1) + " scheduled tasks and events.");
-                System.out.println("    ____________________________________________________________");
+                if (input.length() <= 6) {
+                    System.out.println("    ____________________________________________________________");
+                    System.out.println("    OOPS!!! The description of a task with an event cannot be empty.");
+                    System.out.println("    ____________________________________________________________");
+                } else {
+                    String details = input.substring(6).trim();
+                    String[] parts = details.split(" /from | /to ");
+                    String description = parts[0];
+                    String from = parts[1];
+                    String to = parts[2];
+                    taskList[maxIndex + 1] = new Event(description, from, to);
+                    maxIndex++;
+                    System.out.println("    ____________________________________________________________");
+                    System.out.println("    I have scheduled the event for you!");
+                    System.out.println("    " + taskList[maxIndex].getTaskString());
+                    System.out.println("    You have " + (maxIndex + 1) + " scheduled tasks and events.");
+                    System.out.println("    ____________________________________________________________");
+                }
             } else {
+                System.out.println("    ____________________________________________________________");
                 System.out.println("    Hmm I don't understand what this means.");
+                System.out.println("    ____________________________________________________________");
             }
         }
         scanner.close();
