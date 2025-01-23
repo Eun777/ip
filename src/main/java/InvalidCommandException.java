@@ -1,5 +1,5 @@
-public class InvalidCommand extends eunAIException {
-    public InvalidCommand(String message) {
+public class InvalidCommandException extends EunAIException {
+    public InvalidCommandException(String message) {
         super(message);
     }
 }

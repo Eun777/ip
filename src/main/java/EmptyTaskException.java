@@ -1,4 +1,4 @@
-public class EmptyTaskException extends eunAIException {
+public class EmptyTaskException extends EunAIException {
     public EmptyTaskException(String message) {
         super(message);
     }
