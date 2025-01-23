@@ -33,14 +33,33 @@ public class EunAI {
                 System.out.println("    ____________________________________________________________");
             } else if (input.startsWith("mark")) {
                 try {
-                    // parse the task number (convert from 1-based to 0-based index)
                     int toMark = Integer.parseInt(input.substring(5).trim()) - 1;
 
-                    // validate the index
                     if (toMark >= 0 && toMark <= maxIndex) {
-                        taskList[toMark].markTask(); // mark the task as done
+                        taskList[toMark].markTask();
                         System.out.println("    ____________________________________________________________");
-                        System.out.println("    Nice! I've marked this task as done:");
+                        System.out.println("    You've completed a task? Good job! I have marked it as done:");
+                        System.out.print("      ");
+                        taskList[toMark].printTask();
+                        System.out.println("    ____________________________________________________________");
+                    } else {
+                        System.out.println("    ____________________________________________________________");
+                        System.out.println("    Oops! That task number doesn't exist.");
+                        System.out.println("    ____________________________________________________________");
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("    ____________________________________________________________");
+                    System.out.println("    Please enter a valid number after 'mark'.");
+                    System.out.println("    ____________________________________________________________");
+                }
+            } else if (input.startsWith("unmark")) {
+                try {
+                    int toMark = Integer.parseInt(input.substring(7).trim()) - 1;
+
+                    if (toMark >= 0 && toMark <= maxIndex) {
+                        taskList[toMark].unmarkTask();
+                        System.out.println("    ____________________________________________________________");
+                        System.out.println("    You didn't completed the task? Please do it:");
                         System.out.print("      ");
                         taskList[toMark].printTask();
                         System.out.println("    ____________________________________________________________");
