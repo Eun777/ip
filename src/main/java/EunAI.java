@@ -101,7 +101,7 @@ public class EunAI {
                     taskList.add(new Deadline(parts[0], parts[1]));
                     maxIndex++;
                     System.out.println("    ____________________________________________________________");
-                    System.out.println("    Added the task! Stick to the deadline please :) ");
+                    System.out.println("    Added the task! Stick to the deadline please :)");
                     System.out.println("    " + taskList.get(maxIndex).getTaskString());
                     System.out.println("    You have " + (maxIndex + 1) + " scheduled tasks and events.");
                     System.out.println("    ____________________________________________________________");
