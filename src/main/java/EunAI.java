@@ -1,10 +1,16 @@
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.io.IOException;
 public class EunAI {
+
+    public static final String FILE_PATH = "./data/eunAI.txt";
+    private static Storage storage;
+    private static ArrayList<Task> taskList;
     public static void main(String[] args) {
 
         Scanner scanner = new Scanner(System.in);
-        ArrayList<Task> taskList = new ArrayList<>();
+        storage = new Storage(FILE_PATH);
+        taskList = storage.loadSavedTasks();
 
         System.out.println("    ____________________________________________________________");
         System.out.println("    Hello! I'm EunAI");
@@ -40,12 +46,17 @@ public class EunAI {
                     System.out.println("    ____________________________________________________________");
                     System.out.println("    Bye. Hope to see you again soon!");
                     System.out.println("    ____________________________________________________________");
-                    scanner.close();
                     return;
                 default:
                     System.out.println("    ____________________________________________________________");
                     System.out.println("    Hmm I don't understand what this means.");
                     System.out.println("    ____________________________________________________________");
+            }
+
+            try {
+                storage.saveTasks(taskList);
+            } catch (IOException e) {
+                System.out.println("    ERROR! Failed to save tasks.");
             }
         }
     }
@@ -56,7 +67,7 @@ public class EunAI {
                 throw new EmptyTaskException("OOPS!!! The description of a todo cannot be empty.");
             }
             String description = input.substring(5).trim(); // Remove "todo"
-            taskList.add(new ToDo(description));
+            taskList.add(new ToDo(description, false));
             System.out.println("    ____________________________________________________________");
             System.out.println("    Added the task! Remember to do it!");
             System.out.println("    " + taskList.getLast().getTaskString());
@@ -76,7 +87,7 @@ public class EunAI {
             }
             String details = input.substring(9).trim();
             String[] parts = details.split(" /by ");
-            taskList.add(new Deadline(parts[0], parts[1]));
+            taskList.add(new Deadline(parts[0], false, parts[1]));
             System.out.println("    ____________________________________________________________");
             System.out.println("    Added the task! Stick to the deadline please :)");
             System.out.println("    " + taskList.getLast().getTaskString());
@@ -99,7 +110,7 @@ public class EunAI {
             String description = parts[0];
             String from = parts[1];
             String to = parts[2];
-            taskList.add(new Event(description, from, to));
+            taskList.add(new Event(description, false, from, to));
             System.out.println("    ____________________________________________________________");
             System.out.println("    I have scheduled the event for you!");
             System.out.println("    " + taskList.getLast().getTaskString());
