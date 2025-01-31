@@ -1,20 +1,21 @@
+import java.time.LocalDateTime;
 public class Deadline extends Task {
 
-    protected String byDate;
+    protected LocalDateTime byDate;
 
     public Deadline(String description, boolean isDone, String date) {
         super(description, isDone);
-        this.byDate = date;
+        this.byDate = DateParser.parseDate(date);
     }
 
     @Override
     public void printTask() {
-        System.out.println("[D]["+ this.getStatusIcon()+ "] " + this.description + " (by: " + this.byDate + ")");
+        System.out.println("[D]["+ this.getStatusIcon()+ "] " + this.description + " (by: " + DateParser.formatDate(this.byDate) + ")");
     }
 
     @Override
     public String getTaskString() {
-        return "[D]["+ this.getStatusIcon()+ "] " + this.description + " (by: " + this.byDate + ")";
+        return "[D]["+ this.getStatusIcon()+ "] " + this.description + " (by: " + DateParser.formatDate(this.byDate) + ")";
     }
 
     @Override

@@ -53,8 +53,7 @@ public class Storage {
                 String taskDate = splitParts[3];
                 return new Deadline(taskDescription, taskIsDone, taskDate);
             case "E":
-                String[] splitDate = splitParts[3].split("-");
-                return new Event(taskDescription, taskIsDone, splitDate[0], splitDate[1]);
+                return new Event(taskDescription, taskIsDone, splitParts[3], splitParts[4]);
             default:
                 throw new IllegalArgumentException("    Invalid task format.");
         }

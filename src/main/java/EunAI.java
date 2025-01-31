@@ -97,6 +97,10 @@ public class EunAI {
             System.out.println("    ____________________________________________________________");
             System.out.println("    OOPS!!! The description of a deadline cannot be empty.");
             System.out.println("    ____________________________________________________________");
+        } catch (IllegalArgumentException e) {
+            System.out.println("    ____________________________________________________________");
+            System.out.println("    OOPS!!! Date provided is in wrong format!");
+            System.out.println("    ____________________________________________________________");
         }
     }
 
