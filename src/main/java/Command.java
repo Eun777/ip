@@ -27,9 +27,7 @@ public class Command {
             handleDelete(input, tasks, ui);
             break;
         case BYE:
-            System.out.println("    ____________________________________________________________");
-            System.out.println("    Bye. Hope to see you again soon!");
-            System.out.println("    ____________________________________________________________");
+            ui.showGoodbyeMessage();
             return;
         default:
             System.out.println("    ____________________________________________________________");
