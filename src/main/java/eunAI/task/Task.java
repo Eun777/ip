@@ -1,6 +1,8 @@
+package eunAI.task;
+
 import com.sun.source.tree.Tree;
 
-abstract class Task {
+public abstract class Task {
     protected String description;
     protected boolean isDone;
 

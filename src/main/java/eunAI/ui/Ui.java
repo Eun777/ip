@@ -1,3 +1,8 @@
+package eunAI.ui;
+
+import eunAI.TaskList;
+import eunAI.task.Task;
+
 import java.util.Scanner;
 public class Ui {
     private Scanner scanner;
@@ -8,7 +13,7 @@ public class Ui {
 
     public void showWelcomeMessage() {
         showLine();
-        System.out.println("    Hello! I'm EunAI");
+        System.out.println("    Hello! I'm eunAI.EunAI");
         System.out.println("    What can I do for you?");
         showLine();
     }

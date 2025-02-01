@@ -1,3 +1,10 @@
+package eunAI;
+
+import eunAI.task.Deadline;
+import eunAI.task.Event;
+import eunAI.task.Task;
+import eunAI.task.ToDo;
+
 import java.io.*;
 import java.util.ArrayList;
 public class Storage {
