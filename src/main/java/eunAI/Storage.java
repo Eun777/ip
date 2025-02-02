@@ -7,13 +7,26 @@ import eunAI.task.ToDo;
 
 import java.io.*;
 import java.util.ArrayList;
+
+/**
+ * Represents the storage component responsible for reading from and writing tasks to a file.
+ */
 public class Storage {
     private String filePath;
 
+    /**
+     * Constructs a {@code Storage} object with the specified file path.
+     * @param filePath The path of the file to save/load task data.
+     */
     public Storage(String filePath) {
         this.filePath = filePath;
     }
 
+    /**
+     * Saves the given list of tasks to the file specified by {@code filePath}.
+     * @param taskList The list of tasks to save.
+     * @throws IOException If an I/O error occurs during writing.
+     */
     public void saveTasks(ArrayList<Task> taskList) throws IOException {
         File file = new File(filePath);
         file.getParentFile().mkdirs();
@@ -27,6 +40,11 @@ public class Storage {
 
     }
 
+    /**
+     * Loads previously saved tasks from the file specified by {@code filePath}.
+     * If the file does not exist, an empty task list is returned.
+     * @return An {@code ArrayList} of tasks loaded from the file.
+     */
     public ArrayList<Task> loadSavedTasks() {
         ArrayList<Task> prevTaskList = new ArrayList<>();
         File savedFile = new File(filePath);
@@ -47,6 +65,11 @@ public class Storage {
         return prevTaskList;
     }
 
+    /**
+     * Parses a line from the saved file into a {@code Task} object.
+     * @param line The line from the file representing a task.
+     * @return The corresponding {@code Task} object.
+     */
     private Task parseTask(String line) {
         String[] splitParts = line.split(" \\| ");
         String taskType = splitParts[0];

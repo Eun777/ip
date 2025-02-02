@@ -6,18 +6,30 @@ import eunAI.ui.Ui;
 
 import java.util.Scanner;
 
+/**
+ * Represents the main application for managing tasks.
+ * Initializes the UI, storage, and task list, and handles user input in a command loop.
+ */
 public class EunAI {
 
     private final Storage storage;
     private final TaskList taskList;
     private final Ui ui;
 
+    /**
+     * Contructs an EunAI chatbot instance with the specified filePath for task storage.
+     * @param filePath The file path where tasks are saved and loaded.
+     */
     public EunAI(String filePath) {
         ui = new Ui();
         storage = new Storage(filePath);
         taskList = new TaskList(storage.loadSavedTasks());
     }
 
+    /**
+     * Runs the main loop of the application.
+     * Displays a welcome message and processes user commands until the exit command is received.
+     */
     public void run() {
         ui.showWelcomeMessage();
         boolean isExit = false;
@@ -35,6 +47,11 @@ public class EunAI {
         }
     }
 
+    /**
+     * The entry point of the application.
+     * Initializes and runs an EunAI instance using the default file path.
+     * @param args
+     */
     public static void main(String[] args) {
         new EunAI("./data/eunAI.txt").run();
     }
