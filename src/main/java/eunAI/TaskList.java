@@ -88,6 +88,6 @@ public class TaskList {
      * @return The last task in the list.
      */
     public Task getLastTask() {
-        return taskList.getLast();
+        return taskList.get(getSize() - 1);
     }
 }
