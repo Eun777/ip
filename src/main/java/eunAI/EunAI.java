@@ -53,6 +53,6 @@ public class EunAI {
      * @param args
      */
     public static void main(String[] args) {
-        new EunAI("./data/eunAI.txt").run();
+        new EunAI("/Users/euniceng/ip/data/eunAI.txt").run();
     }
 }
