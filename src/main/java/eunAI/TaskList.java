@@ -90,4 +90,14 @@ public class TaskList {
     public Task getLastTask() {
         return taskList.get(getSize() - 1);
     }
+
+    public TaskList findTask(String keyword) {
+        TaskList foundTasks = new TaskList();
+        for (Task task: taskList) {
+            if (task.getDescription().toLowerCase().contains(keyword.toLowerCase())) {
+                foundTasks.addTask(task);
+            }
+        }
+        return foundTasks;
+    }
 }

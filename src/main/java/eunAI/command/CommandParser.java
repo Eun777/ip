@@ -2,7 +2,7 @@ package eunAI.command;
 
 public class CommandParser {
     public enum Command {
-        TODO, DEADLINE, EVENT, LIST, MARK, UNMARK, DELETE, BYE, INVALID
+        TODO, DEADLINE, EVENT, LIST, MARK, UNMARK, DELETE, FIND, BYE, INVALID
     }
 
     public static Command parseCommand(String input) {
@@ -20,6 +20,8 @@ public class CommandParser {
             return Command.UNMARK;
         } else if (input.startsWith("delete")) {
             return Command.DELETE;
+        } else if (input.startsWith("find")) {
+            return Command.FIND;
         } else if (input.equals("bye")) {
             return Command.BYE;
         } else {

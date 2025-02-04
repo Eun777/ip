@@ -79,6 +79,19 @@ public class Ui {
         showLine();
     }
 
+    public void showFoundTasks(TaskList taskList) {
+        showLine();
+        if (taskList.getSize() == 0) {
+            System.out.println("    No tasks with this keyword found...");
+        } else {
+            System.out.println("    Tasks found:");
+            for (int i = 0; i < taskList.getSize(); i++) {
+                System.out.println("    " + (i + 1) + ". " + taskList.getTask(i).getTaskString());
+            }
+        }
+        showLine();
+    }
+
 
     public void showLine() {
         System.out.println("    ____________________________________________________________");

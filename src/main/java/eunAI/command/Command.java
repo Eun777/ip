@@ -35,6 +35,9 @@ public class Command {
         case UNMARK:
             handleUnmark(input, tasks, ui);
             break;
+        case FIND:
+            handleFind(input, tasks, ui);
+            break;
         case DELETE:
             handleDelete(input, tasks, ui);
             break;
@@ -126,6 +129,19 @@ public class Command {
             ui.showTaskDeleted(deletedTask, tasks.getSize());
         } catch (Exception e) {
             ui.showErrorMessage("Please enter a valid task number to delete.");
+        }
+    }
+
+    private static void handleFind(String input, TaskList taskList, Ui ui) {
+        try {
+            if (input.length() <= 5) {
+                throw new EmptyTaskException("OOPS!! The keyword for find cannot be empty.");
+            }
+            String keyword = input.substring(5).trim();
+            TaskList foundTasks = taskList.findTask(keyword);
+            ui.showFoundTasks(foundTasks);
+        } catch (Exception e) {
+            ui.showErrorMessage("No task found... please try again.");
         }
     }
 }
