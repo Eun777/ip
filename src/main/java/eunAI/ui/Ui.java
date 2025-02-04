@@ -13,7 +13,7 @@ public class Ui {
 
     public void showWelcomeMessage() {
         showLine();
-        System.out.println("    Hello! I'm eunAI.EunAI");
+        System.out.println("    Hello! I'm eunAI");
         System.out.println("    What can I do for you?");
         showLine();
     }

@@ -9,6 +9,8 @@ import eunAI.task.Event;
 import eunAI.task.ToDo;
 import eunAI.task.Task;
 
+import java.io.IOException;
+
 public class Command {
 
     public static void execute(String input, TaskList tasks, Ui ui, Storage storage) {
@@ -37,8 +39,15 @@ public class Command {
             handleDelete(input, tasks, ui);
             break;
         case BYE:
-            ui.showGoodbyeMessage();
-            return;
+            try {
+                storage.saveTasks(tasks.getAllTasks());
+                ui.showGoodbyeMessage();
+                return;
+            } catch (IOException e) {
+                System.out.println("    ____________________________________________________________");
+                System.out.println("    Sorryyyy but your tasks could not be saved...");
+                System.out.println("    ____________________________________________________________");
+            }
         default:
             System.out.println("    ____________________________________________________________");
             System.out.println("    Hmm I don't understand what this means.");

@@ -53,6 +53,8 @@ public class EunAI {
      * @param args
      */
     public static void main(String[] args) {
-        new EunAI("/Users/euniceng/ip/data/eunAI.txt").run();
+        String userHome = System.getProperty("user.home");
+        String filePath = userHome + "/ip/data/eunAI.txt";
+        new EunAI(filePath).run();
     }
 }
