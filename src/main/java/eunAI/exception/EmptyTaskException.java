@@ -2,9 +2,9 @@ package eunAI.exception;
 
 /**
  * Represents an exception that is thrown when a task is created without a description.
- * Inherits from {@link EunAIException} to handle task-specific input errors.
+ * Inherits from {@link EunAiException} to handle task-specific input errors.
  */
-public class EmptyTaskException extends EunAIException {
+public class EmptyTaskException extends EunAiException {
 
     /**
      * Constructs an {@code EmptyTaskException} with the specified detail message.

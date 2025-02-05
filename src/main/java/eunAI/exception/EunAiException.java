@@ -5,14 +5,14 @@ package eunAI.exception;
  * Represents a custom exception specific to the {@code eunAI} application.
  * Serves as the base class for all application-specific exceptions.
  */
-public class EunAIException extends Exception {
+public class EunAiException extends Exception {
 
     /**
      * Constructs an {@code EunAIException} with the specified detail message.
      *
      * @param message The detail message explaining the cause of the exception.
      */
-    public EunAIException(String message) {
+    public EunAiException(String message) {
         super(message);
     }
 }

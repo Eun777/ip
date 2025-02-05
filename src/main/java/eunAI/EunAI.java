@@ -1,10 +1,11 @@
 package eunAI;
 
+import java.util.Scanner;
+
 import eunAI.command.Command;
 import eunAI.command.CommandParser;
 import eunAI.ui.Ui;
 
-import java.util.Scanner;
 
 /**
  * Represents the main application for managing tasks.

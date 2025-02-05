@@ -1,12 +1,18 @@
 package eunAI;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+
 import eunAI.task.Deadline;
 import eunAI.task.Event;
 import eunAI.task.Task;
 import eunAI.task.ToDo;
 
-import java.io.*;
-import java.util.ArrayList;
+
 
 /**
  * Represents the storage component responsible for reading from and writing tasks to a file.
@@ -32,7 +38,7 @@ public class Storage {
         file.getParentFile().mkdirs();
         FileWriter writer = new FileWriter(file);
 
-        for(int i = 0; i < taskList.size(); i++) {
+        for (int i = 0; i < taskList.size(); i++) {
             writer.write(taskList.get(i).toFileFormat() + System.lineSeparator());
         }
 
@@ -77,15 +83,15 @@ public class Storage {
         String taskDescription = splitParts[2];
 
         switch (taskType) {
-            case "T":
-                return new ToDo(taskDescription, taskIsDone);
-            case "D":
-                String taskDate = splitParts[3];
-                return new Deadline(taskDescription, taskIsDone, taskDate);
-            case "E":
-                return new Event(taskDescription, taskIsDone, splitParts[3], splitParts[4]);
-            default:
-                throw new IllegalArgumentException("    Invalid task format.");
+        case "T":
+            return new ToDo(taskDescription, taskIsDone);
+        case "D":
+            String taskDate = splitParts[3];
+            return new Deadline(taskDescription, taskIsDone, taskDate);
+        case "E":
+            return new Event(taskDescription, taskIsDone, splitParts[3], splitParts[4]);
+        default:
+            throw new IllegalArgumentException("    Invalid task format.");
         }
 
     }

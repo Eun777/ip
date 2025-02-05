@@ -1,28 +1,28 @@
 package eunAI;
 
-import java.time.LocalDateTime;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 
 /**
- * Represents a utility class used for parsing and formating date strings.
- * Supports multiple date formats for flexible unput handling.
+ * Represents a utility class used for parsing and formatting date strings.
+ * Supports multiple date formats for flexible input handling.
  */
 public class DateParser {
 
     private static final List<String> DATE_FORMATS = List.of(
-            "yyyy-MM-dd",        // 2019-12-02
+            "yyyy-MM-dd", // 2019-12-02
             "yyyy-MM-dd'T'HH:mm", // 2019-12-02T18:00 (ISO format)
             "yyyy-MM-dd'T'HH:mm:ss", // 2025-02-01T00:00:00
-            "dd/MM/yy HHmm",     // 02/12/19 1800
-            "d/M/yyyy HHmm",     // 2/12/2019 1800
-            "d/M/yyyy",          // 2/12/2019
-            "MMM dd yyyy HHmm",  // Dec 02 2019 1800
-            "MMM dd yyyy",       // Dec 02 2019
-            "dd/MM/yyyy HHmm",   // 02/12/2019 1800
-            "dd/MM/yyyy"         // 02/12/2019
+            "dd/MM/yy HHmm", // 02/12/19 1800
+            "d/M/yyyy HHmm", // 2/12/2019 1800
+            "d/M/yyyy", // 2/12/2019
+            "MMM dd yyyy HHmm", // Dec 02 2019 1800
+            "MMM dd yyyy", // Dec 02 2019
+            "dd/MM/yyyy HHmm", // 02/12/2019 1800
+            "dd/MM/yyyy" // 02/12/2019
     );
 
     /**

@@ -1,7 +1,8 @@
 package eunAI.task;
 
-import eunAI.DateParser;
 import java.time.LocalDateTime;
+
+import eunAI.DateParser;
 
 /**
  * Represents a task with a deadline.
