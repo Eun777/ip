@@ -115,4 +115,17 @@ public class TaskList {
         }
         return foundTasks;
     }
+
+    public String getListString() {
+        if (taskList.isEmpty()) {
+            return "Your task list is empty.";
+        }
+        StringBuilder listString = new StringBuilder("Here are your tasks:\n");
+
+        for (int i = 0; i < taskList.size(); i++) {
+            listString.append(i + 1).append(". ").append(taskList.get(i).getTaskString()).append("\n");
+        }
+        return listString.toString().trim();
+    }
+
 }
