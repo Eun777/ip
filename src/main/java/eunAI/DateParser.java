@@ -13,6 +13,7 @@ import java.util.List;
 public class DateParser {
 
     private static final List<String> DATE_FORMATS = List.of(
+            "yyyy-MM-dd HH:mm",
             "yyyy-MM-dd", // 2019-12-02
             "yyyy-MM-dd'T'HH:mm", // 2019-12-02T18:00 (ISO format)
             "yyyy-MM-dd'T'HH:mm:ss", // 2025-02-01T00:00:00
@@ -35,11 +36,9 @@ public class DateParser {
             try {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
 
-                if (format.contains("HHmm")) {
-                    // If the format includes time, use LocalDateTime
+                if (format.contains("HHmm") || format.contains("HH:mm")) {
                     return LocalDateTime.parse(dateInput, formatter);
                 } else {
-                    // If the format is just a date, use LocalDate and convert it to LocalDateTime
                     return LocalDate.parse(dateInput, formatter).atStartOfDay();
                 }
             } catch (DateTimeParseException ignored) {
@@ -56,7 +55,7 @@ public class DateParser {
      * @return A formatted date-time String.
      */
     public static String formatDate(LocalDateTime dateTime) {
-        DateTimeFormatter displayFormatter = DateTimeFormatter.ofPattern("MMM dd yyyy HH:mm");
+        DateTimeFormatter displayFormatter = DateTimeFormatter.ofPattern("MMM d, yyyy hh:mm a");
         return dateTime.format(displayFormatter);
     }
 
