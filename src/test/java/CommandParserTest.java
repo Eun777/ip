@@ -15,5 +15,13 @@ public class CommandParserTest {
         assertEquals(CommandParser.Command.LIST, CommandParser.parseCommand("list"));
         assertEquals(CommandParser.Command.INVALID, CommandParser.parseCommand("random text"));
     }
+
+    @Test
+    public void testParseCommandEdgeCases() {
+        assertEquals(CommandParser.Command.INVALID, CommandParser.parseCommand("")); // empty string
+        assertEquals(CommandParser.Command.INVALID, CommandParser.parseCommand("   ")); // spaces only
+        assertEquals(CommandParser.Command.TODO, CommandParser.parseCommand("todo")); // no description
+        assertEquals(CommandParser.Command.LIST, CommandParser.parseCommand("list ")); // trailing space
+    }
 }
 
