@@ -23,6 +23,8 @@ public class CommandParser {
      * @return The corresponding {@link Command} type based on the input.
      */
     public static Command parseCommand(String input) {
+        input = input.trim();
+
         if (input.startsWith("todo")) {
             return Command.TODO;
         } else if (input.startsWith("deadline")) {
