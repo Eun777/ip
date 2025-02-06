@@ -1,11 +1,9 @@
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.time.LocalDateTime;
-
 import org.junit.jupiter.api.Test;
 
 import eunAI.task.Deadline;
-import eunAI.DateParser;
+
 
 public class DeadlineTest {
 
@@ -13,7 +11,7 @@ public class DeadlineTest {
     public void testGetTaskStringNotDone() {
         Deadline deadline = new Deadline("submit assignment", false, "2024-06-01 18:00");
 
-        String expected = "[D][ ] submit assignment (by: Jun 1, 2024 06:00 PM)";
+        String expected = "[D][ ] submit assignment (by: Jun 1, 2024 06:00 pm)";
         assertEquals(expected, deadline.getTaskString());
     }
 
@@ -21,7 +19,7 @@ public class DeadlineTest {
     public void testGetTaskStringDone() {
         Deadline deadline = new Deadline("submit assignment", true, "2024-06-01 18:00");
 
-        String expected = "[D][X] submit assignment (by: Jun 1, 2024 06:00 PM)";
+        String expected = "[D][X] submit assignment (by: Jun 1, 2024 06:00 pm)";
         assertEquals(expected, deadline.getTaskString());
     }
 
