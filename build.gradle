@@ -29,7 +29,7 @@ test {
 }
 
 application {
-    mainClass.set("eunAI.eunAI")
+    mainClass.set("eunai.eunai")
 }
 
 shadowJar {

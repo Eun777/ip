@@ -1,4 +1,4 @@
-package eunAI.command;
+package eunai.command;
 
 /**
  * Parses user input and identifies the corresponding command type.

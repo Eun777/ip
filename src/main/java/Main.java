@@ -1,6 +1,6 @@
 import java.io.IOException;
 
-import eunAI.EunAI;
+import eunai.EunAi;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -12,7 +12,7 @@ import javafx.stage.Stage;
  */
 public class Main extends Application {
 
-    private EunAI eunAI = new EunAI("data/eunAI.txt");
+    private EunAi eunAI = new EunAi("data/eunai.txt");
 
     @Override
     public void start(Stage stage) {

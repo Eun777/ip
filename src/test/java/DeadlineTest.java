@@ -2,7 +2,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-import eunAI.task.Deadline;
+import eunai.task.Deadline;
 
 
 public class DeadlineTest {
