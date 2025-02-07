@@ -193,8 +193,11 @@ public class Command {
 
             String keyword = input.substring(5).trim();
             TaskList foundTasks = tasks.findTask(keyword);
-            return (foundTasks.getSize() == 0 ) ? "No matching tasks found."
-                    : "Here are the matching tasks:\n" + foundTasks.getListString();
+            if (foundTasks.getSize() == 0) {
+                return "No matching tasks found.";
+            } else {
+                return "Here are the matching tasks:\n" + foundTasks.getListString();
+            }
         } catch (Exception e) {
             return "No task found... please try again.";
         }
@@ -214,6 +217,7 @@ public class Command {
     }
 
     private static String getTaskAddedMessage(Task task, TaskList tasks) {
-        return "Got it. I've added this task:\n" + task.getTaskString() + "\nNow you have " + tasks.getSize() + " tasks in the list.";
+        return "Got it. I've added this task:\n" + task.getTaskString()
+                + "\nNow you have " + tasks.getSize() + " tasks in the list.";
     }
 }
