@@ -1,8 +1,8 @@
-package eunAI;
+package eunai;
 
-import eunAI.command.Command;
-import eunAI.command.CommandParser;
-import eunAI.ui.Ui;
+import eunai.command.Command;
+import eunai.command.CommandParser;
+import eunai.ui.Ui;
 
 /**
  * Represents the main application for managing tasks.

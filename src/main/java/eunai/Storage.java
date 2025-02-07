@@ -1,4 +1,4 @@
-package eunAI;
+package eunai;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -7,10 +7,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import eunAI.task.Deadline;
-import eunAI.task.Event;
-import eunAI.task.Task;
-import eunAI.task.ToDo;
+import eunai.task.Deadline;
+import eunai.task.Event;
+import eunai.task.Task;
+import eunai.task.ToDo;
 
 
 

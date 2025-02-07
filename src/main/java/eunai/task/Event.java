@@ -1,9 +1,9 @@
-package eunAI.task;
+package eunai.task;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import eunAI.DateParser;
+import eunai.DateParser;
 
 /**
  * Represents an event task that occurs within a specific time period.

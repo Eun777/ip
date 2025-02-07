@@ -2,7 +2,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-import eunAI.command.CommandParser;
+import eunai.command.CommandParser;
 
 
 public class CommandParserTest {

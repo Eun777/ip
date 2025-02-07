@@ -2,10 +2,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-import eunAI.TaskList;
-import eunAI.task.Deadline;
-import eunAI.task.Task;
-import eunAI.task.ToDo;
+import eunai.TaskList;
+import eunai.task.Deadline;
+import eunai.task.Task;
+import eunai.task.ToDo;
 
 
 public class TaskListTest {

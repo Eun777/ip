@@ -1,8 +1,8 @@
-package eunAI;
+package eunai;
 
 import java.util.ArrayList;
 
-import eunAI.task.Task;
+import eunai.task.Task;
 
 /**
  * Represents a list of tasks.

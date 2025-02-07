@@ -1,4 +1,4 @@
-package eunAI.task;
+package eunai.task;
 
 /**
  * Represents a simple to-do task without any specific date or time.

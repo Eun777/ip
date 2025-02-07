@@ -1,4 +1,4 @@
-package eunAI.exception;
+package eunai.exception;
 
 /**
  * Represents an exception that is thrown when a task is created without a description.

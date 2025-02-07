@@ -1,4 +1,4 @@
-package eunAI;
+package eunai;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
