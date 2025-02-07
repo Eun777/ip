@@ -196,7 +196,7 @@ public class Command {
             return (foundTasks.getSize() == 0 ) ? "No matching tasks found."
                     : "Here are the matching tasks:\n" + foundTasks.getListString();
         } catch (Exception e) {
-            return "No task found... please try again.";
+            return "Hmm, no tasks match that keyword. Try again!";
         }
     }
 
