@@ -1,4 +1,4 @@
-import eunAI.EunAI;
+import eunAI.EunAi;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
@@ -20,10 +20,10 @@ public class MainWindow extends AnchorPane {
     @FXML
     private Button sendButton;
 
-    private EunAI eunAI;
+    private EunAi eunAI;
 
     private Image userImage = new Image(this.getClass().getResourceAsStream("/images/DaUser.png"));
-    private Image eunAIImage = new Image(this.getClass().getResourceAsStream("/images/DaEunAI.png"));
+    private Image eunAiImage = new Image(this.getClass().getResourceAsStream("/images/DaEunAI.png"));
 
     @FXML
     public void initialize() {
@@ -31,7 +31,7 @@ public class MainWindow extends AnchorPane {
     }
 
     /** Injects the EunAI instance */
-    public void setEunAI(EunAI e) {
+    public void setEunAI(EunAi e) {
         eunAI = e;
         showWelcomeMessage();
     }
@@ -43,17 +43,17 @@ public class MainWindow extends AnchorPane {
     @FXML
     private void handleUserInput() {
         String input = userInput.getText();
-        String response = eunAI.getResponse(input);
+        String response = eunAI.processUserInput(input);
         dialogContainer.getChildren().addAll(
                 DialogBox.getUserDialog(input, userImage),
-                DialogBox.getEunAiDialog(response, eunAIImage) // Renamed from getDukeDialog
+                DialogBox.getEunAiDialog(response, eunAiImage) // Renamed from getDukeDialog
         );
         userInput.clear();
     }
 
     private void showWelcomeMessage() {
         String welcomeMessage = "Hello! I'm EunAI.\nHow can I assist you today?";
-        dialogContainer.getChildren().add(DialogBox.getEunAiDialog(welcomeMessage, eunAIImage));
+        dialogContainer.getChildren().add(DialogBox.getEunAiDialog(welcomeMessage, eunAiImage));
     }
 
 }
