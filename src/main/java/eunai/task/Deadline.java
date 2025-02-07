@@ -58,4 +58,9 @@ public class Deadline extends Task {
     public String toFileFormat() {
         return "D | " + (this.isDone ? "1" : "0") + " | " + this.description + " | " + this.byDate;
     }
+    @Override
+    public String getTaskType() {
+        return "D";
+    }
+
 }

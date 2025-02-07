@@ -40,7 +40,7 @@ public class TaskList {
     /**
      * Deletes the task at the specified index from the task list.
      *
-     * @param index The index of the task to be deleted (0-based).
+     * @param index The index of the task to be deleted.
      */
     public void deleteTask(int index) {
         this.taskList.remove(index);
@@ -49,7 +49,7 @@ public class TaskList {
     /**
      * Retrieves the task at the specified index.
      *
-     * @param index The index of the task to retrieve (0-based).
+     * @param index The index of the task to retrieve.
      * @return The task at the specified index.
      */
     public Task getTask(int index) {
@@ -59,34 +59,34 @@ public class TaskList {
     /**
      * Marks the task at the specified index as done.
      *
-     * @param index The index of the task to mark as done (0-based).
+     * @param index The index of the task to mark as done.
      */
     public void markTask(int index) {
         this.taskList.get(index).markTask();
     }
 
     /**
-     * Unmarks the task at the specified index, marking it as not done.
+     * Unmarks the task at the specified index (marks it as not done).
      *
-     * @param index The index of the task to unmark (0-based).
+     * @param index The index of the task to unmark.
      */
     public void unmarkTask(int index) {
         this.taskList.get(index).unmarkTask();
     }
 
     /**
-     * Retrieves the full list of tasks.
+     * Returns the entire list of tasks.
      *
-     * @return An {@code ArrayList} containing all tasks in the list.
+     * @return The list of all tasks.
      */
     public ArrayList<Task> getAllTasks() {
         return this.taskList;
     }
 
     /**
-     * Returns the number of tasks currently in the list.
+     * Returns the number of tasks in the list.
      *
-     * @return The total number of tasks in the list.
+     * @return The size of the task list.
      */
     public int getSize() {
         return taskList.size();
@@ -96,16 +96,15 @@ public class TaskList {
      * Retrieves the last task in the task list.
      *
      * @return The last task in the list.
-     * @throws IndexOutOfBoundsException If the task list is empty.
      */
     public Task getLastTask() {
         return taskList.get(getSize() - 1);
     }
 
     /**
-     * Searches for tasks containing the specified keyword in their description.
+     * Searches for tasks that contain the specified keyword in their description.
      *
-     * @param keyword The keyword to search for (case-insensitive).
+     * @param keyword The keyword to search for in the task descriptions.
      * @return A {@code TaskList} containing tasks that match the search keyword.
      */
     public TaskList findTask(String keyword) {
@@ -118,11 +117,6 @@ public class TaskList {
         return foundTasks;
     }
 
-    /**
-     * Returns a formatted string representation of the task list.
-     *
-     * @return A formatted string listing all tasks, or a message if the list is empty.
-     */
     public String getListString() {
         if (taskList.isEmpty()) {
             return "Your task list is empty.";
@@ -134,4 +128,22 @@ public class TaskList {
         }
         return listString.toString().trim();
     }
+
+    /**
+     * Filters tasks by type.
+     *
+     * @param type The task type to filter by ('T' for ToDo, 'D' for Deadline, 'E' for Event).
+     * @return A {@code TaskList} containing only tasks of the specified type.
+     */
+    public TaskList filterByType(String type) {
+        TaskList filteredTasks = new TaskList();
+        for (Task task : taskList) {
+            if (task.getTaskType().equals(type)) {
+                filteredTasks.addTask(task);
+            }
+        }
+        return filteredTasks;
+    }
+
+
 }

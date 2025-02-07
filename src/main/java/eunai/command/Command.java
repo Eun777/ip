@@ -192,16 +192,34 @@ public class Command {
             }
 
             String keyword = input.substring(5).trim();
-            TaskList foundTasks = tasks.findTask(keyword);
-            if (foundTasks.getSize() == 0) {
-                return "No matching tasks found.";
-            } else {
-                return "Here are the matching tasks:\n" + foundTasks.getListString();
+            TaskList foundTasks = new TaskList();
+
+            // Check for specific task type filtering
+            switch (keyword.toLowerCase()) {
+            case "<todo>":
+                foundTasks = tasks.filterByType("T");
+                break;
+            case "<deadline>":
+                foundTasks = tasks.filterByType("D");
+                break;
+            case "<event>":
+                foundTasks = tasks.filterByType("E");
+                break;
+            default:
+                foundTasks = tasks.findTask(keyword); // Normal keyword search
+                break;
             }
+
+            if (foundTasks.getSize() == 0) {
+                return "Hmm, no tasks match that search. Try again!";
+            }
+
+            return "Found " + foundTasks.getSize() + " matching task(s):\n" + foundTasks.getListString();
         } catch (Exception e) {
-            return "No task found... please try again.";
+            return "Invalid search. Please provide a keyword or task type after 'find'.";
         }
     }
+
 
     private static String handleExit(TaskList tasks, Storage storage) {
         try {

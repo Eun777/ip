@@ -94,4 +94,13 @@ public abstract class Task {
     public String getDescription() {
         return this.description;
     }
+    /**
+     * Returns the task type identifier.
+     *
+     * @return A string representing the task type ("T" for ToDo, "D" for Deadline, "E" for Event).
+     */
+    public String getTaskType() {
+        return "default"; // Default, should be overridden in subclasses
+    }
+
 }
