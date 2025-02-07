@@ -128,4 +128,21 @@ public class TaskList {
         return listString.toString().trim();
     }
 
+    /**
+     * Filters tasks by type.
+     *
+     * @param type The task type to filter by ('T' for ToDo, 'D' for Deadline, 'E' for Event).
+     * @return A {@code TaskList} containing only tasks of the specified type.
+     */
+    public TaskList filterByType(String type) {
+        TaskList filteredTasks = new TaskList();
+        for (Task task : taskList) {
+            if (task.getTaskType().equals(type)) {
+                filteredTasks.addTask(task);
+            }
+        }
+        return filteredTasks;
+    }
+
+
 }

@@ -180,10 +180,11 @@ public class Command {
     }
 
     /**
-     * Finds and displays tasks that match the given keyword.
+     * Finds and displays tasks based on a keyword or task type (todo, deadline, event).
      *
-     * @param input The user input command containing the search keyword.
+     * @param input The user input command containing the search keyword or task type.
      * @param tasks The task list to search within.
+     * @return A response message with the list of matching tasks or a message if none are found.
      */
     private static String handleFind(String input, TaskList tasks) {
         try {
@@ -192,13 +193,34 @@ public class Command {
             }
 
             String keyword = input.substring(5).trim();
-            TaskList foundTasks = tasks.findTask(keyword);
-            return (foundTasks.getSize() == 0 ) ? "No matching tasks found."
-                    : "Here are the matching tasks:\n" + foundTasks.getListString();
+            TaskList foundTasks = new TaskList();
+
+            // Check for specific task type filtering
+            switch (keyword.toLowerCase()) {
+            case "<todo>":
+                foundTasks = tasks.filterByType("T");
+                break;
+            case "<deadline>":
+                foundTasks = tasks.filterByType("D");
+                break;
+            case "<event>":
+                foundTasks = tasks.filterByType("E");
+                break;
+            default:
+                foundTasks = tasks.findTask(keyword); // Normal keyword search
+                break;
+            }
+
+            if (foundTasks.getSize() == 0) {
+                return "Hmm, no tasks match that search. Try again!";
+            }
+
+            return "Found " + foundTasks.getSize() + " matching task(s):\n" + foundTasks.getListString();
         } catch (Exception e) {
-            return "Hmm, no tasks match that keyword. Try again!";
+            return "Invalid search. Please provide a keyword or task type after 'find'.";
         }
     }
+
 
     private static String handleExit(TaskList tasks, Storage storage) {
         try {

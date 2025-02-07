@@ -68,4 +68,9 @@ public class Event extends Task {
                 + startDate.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) + " | "
                 + endDate.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
     }
+    @Override
+    public String getTaskType() {
+        return "E";
+    }
+
 }

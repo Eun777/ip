@@ -46,4 +46,9 @@ public class ToDo extends Task {
     public String toFileFormat() {
         return "T | " + (this.isDone ? "1" : "0") + " | " + this.description;
     }
+    @Override
+    public String getTaskType() {
+        return "T";
+    }
+
 }
