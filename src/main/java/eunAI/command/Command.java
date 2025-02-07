@@ -30,45 +30,31 @@ public class Command {
      * @param ui The {@link Ui} object to interact with the user.
      * @param storage The {@link Storage} object to handle task persistence.
      */
-    public static void execute(String input, TaskList tasks, Ui ui, Storage storage) {
+    public static String execute(String input, TaskList tasks, Ui ui, Storage storage) {
         CommandParser.Command commandType = CommandParser.parseCommand(input);
+        String response;
 
         switch (commandType) {
         case TODO:
-            handleTodo(input, tasks, ui);
-            break;
+            return handleTodo(input, tasks);
         case DEADLINE:
-            handleDeadline(input, tasks, ui);
-            break;
+            return handleDeadline(input, tasks);
         case EVENT:
-            handleEvent(input, tasks, ui);
-            break;
+            return handleEvent(input, tasks);
         case LIST:
-            handleList(tasks, ui);
-            break;
+            return handleList(tasks);
         case MARK:
-            handleMark(input, tasks, ui);
-            break;
+            return handleMark(input, tasks);
         case UNMARK:
-            handleUnmark(input, tasks, ui);
-            break;
+            return handleUnmark(input, tasks);
         case FIND:
-            handleFind(input, tasks, ui);
-            break;
+            return handleFind(input, tasks);
         case DELETE:
-            handleDelete(input, tasks, ui);
-            break;
+            return handleDelete(input, tasks);
         case BYE:
-            try {
-                storage.saveTasks(tasks.getAllTasks());
-                ui.showGoodbyeMessage();
-                return;
-            } catch (IOException e) {
-                ui.showErrorMessage("Sorry, but your tasks could not be saved...");
-            }
-            break;
+            return handleExit(tasks, storage);
         default:
-            ui.showErrorMessage("Hmm, I don't understand what this means.");
+            return "Hmm, I don't understand what this means.";
         }
     }
 
@@ -77,18 +63,19 @@ public class Command {
      *
      * @param input The user input command containing the to-do description.
      * @param tasks The task list to add the to-do task to.
-     * @param ui The UI object to display messages to the user.
      */
-    private static void handleTodo(String input, TaskList tasks, Ui ui) {
+    private static String handleTodo(String input, TaskList tasks) {
         try {
             if (input.length() <= 5) {
                 throw new EmptyTaskException("OOPS!!! The description of a todo cannot be empty.");
             }
+
             String description = input.substring(5).trim();
-            tasks.addTask(new ToDo(description, false));
-            ui.showTaskAdded(tasks.getLastTask(), tasks.getSize());
+            Task newTask = new ToDo(description, false);
+            tasks.addTask(newTask);
+            return getTaskAddedMessage(newTask, tasks);
         } catch (EmptyTaskException e) {
-            ui.showErrorMessage(e.getMessage());
+            return e.getMessage();
         }
     }
 
@@ -97,18 +84,19 @@ public class Command {
      *
      * @param input The user input command containing the deadline description and date.
      * @param tasks The task list to add the deadline task to.
-     * @param ui The UI object to display messages to the user.
      */
-    private static void handleDeadline(String input, TaskList tasks, Ui ui) {
+    private static String handleDeadline(String input, TaskList tasks) {
         try {
             String[] parts = input.substring(9).trim().split(" /by ");
             if (parts.length < 2) {
                 throw new EmptyTaskException("OOPS!!! The description of a deadline cannot be empty.");
             }
-            tasks.addTask(new Deadline(parts[0], false, parts[1]));
-            ui.showTaskAdded(tasks.getLastTask(), tasks.getSize());
+
+            Task newTask = new Deadline(parts[0], false, parts[1]);
+            tasks.addTask(newTask);
+            return getTaskAddedMessage(newTask, tasks);
         } catch (EmptyTaskException e) {
-            ui.showErrorMessage(e.getMessage());
+            return e.getMessage();
         }
     }
 
@@ -117,18 +105,19 @@ public class Command {
      *
      * @param input The user input command containing the event description, start date, and end date.
      * @param tasks The task list to add the event task to.
-     * @param ui The UI object to display messages to the user.
      */
-    private static void handleEvent(String input, TaskList tasks, Ui ui) {
+    private static String handleEvent(String input, TaskList tasks) {
         try {
             String[] parts = input.substring(6).trim().split(" /from | /to ");
             if (parts.length < 3) {
                 throw new EmptyTaskException("OOPS!!! The description of an event cannot be empty.");
             }
-            tasks.addTask(new Event(parts[0], false, parts[1], parts[2]));
-            ui.showTaskAdded(tasks.getLastTask(), tasks.getSize());
+
+            Task newTask = new Event(parts[0], false, parts[1], parts[2]);
+            tasks.addTask(newTask);
+            return getTaskAddedMessage(newTask, tasks);
         } catch (EmptyTaskException e) {
-            ui.showErrorMessage(e.getMessage());
+            return e.getMessage();
         }
     }
 
@@ -136,10 +125,9 @@ public class Command {
      * Displays the current list of tasks.
      *
      * @param tasks The task list to display.
-     * @param ui The UI object to display the list to the user.
      */
-    private static void handleList(TaskList tasks, Ui ui) {
-        ui.showTaskList(tasks);
+    private static String handleList(TaskList tasks) {
+        return (tasks.getSize() == 0) ? "Your task list is empty." : tasks.getListString();
     }
 
     /**
@@ -147,15 +135,14 @@ public class Command {
      *
      * @param input The user input command specifying the task index to mark.
      * @param tasks The task list containing the task to mark.
-     * @param ui The UI object to display confirmation to the user.
      */
-    private static void handleMark(String input, TaskList tasks, Ui ui) {
+    private static String handleMark(String input, TaskList tasks) {
         try {
-            int index = Integer.parseInt(input.substring(5).trim()) - 1;
+            int index = getTaskIndex(input, 5);
             tasks.getTask(index).markTask();
-            ui.showTaskMarked(tasks.getTask(index), tasks.getSize());
+            return "Nice! I've marked this task as done:\n" + tasks.getTask(index).getTaskString();
         } catch (Exception e) {
-            ui.showErrorMessage("Please enter a valid task number after 'mark'.");
+            return "Please enter a valid task number after 'mark'.";
         }
     }
 
@@ -164,33 +151,31 @@ public class Command {
      *
      * @param input The user input command specifying the task index to unmark.
      * @param tasks The task list containing the task to unmark.
-     * @param ui The UI object to display confirmation to the user.
      */
-    private static void handleUnmark(String input, TaskList tasks, Ui ui) {
+    private static String handleUnmark(String input, TaskList tasks) {
         try {
-            int index = Integer.parseInt(input.substring(7).trim()) - 1;
+            int index = getTaskIndex(input, 7);
             tasks.getTask(index).unmarkTask();
-            ui.showTaskUnmarked(tasks.getTask(index), tasks.getSize());
+            return "OK, I've marked this task as not done yet:\n" + tasks.getTask(index).getTaskString();
         } catch (Exception e) {
-            ui.showErrorMessage("Please enter a valid task number after 'unmark'.");
+            return "Please enter a valid task number after 'unmark'.";
         }
     }
-
     /**
      * Deletes a task from the task list.
      *
      * @param input The user input command specifying the task index to delete.
      * @param tasks The task list containing the task to delete.
-     * @param ui The UI object to display confirmation to the user.
      */
-    private static void handleDelete(String input, TaskList tasks, Ui ui) {
+    private static String handleDelete(String input, TaskList tasks) {
         try {
-            int index = Integer.parseInt(input.substring(7).trim()) - 1;
+            int index = getTaskIndex(input, 7);
             Task deletedTask = tasks.getTask(index);
             tasks.deleteTask(index);
-            ui.showTaskDeleted(deletedTask, tasks.getSize());
+            return "Noted. I've removed this task:\n" + deletedTask.getTaskString()
+                    + "\nNow you have " + tasks.getSize() + " tasks in the list.";
         } catch (Exception e) {
-            ui.showErrorMessage("Please enter a valid task number to delete.");
+            return "Please enter a valid task number to delete.";
         }
     }
 
@@ -198,19 +183,37 @@ public class Command {
      * Finds and displays tasks that match the given keyword.
      *
      * @param input The user input command containing the search keyword.
-     * @param taskList The task list to search within.
-     * @param ui The UI object to display the found tasks to the user.
+     * @param tasks The task list to search within.
      */
-    private static void handleFind(String input, TaskList taskList, Ui ui) {
+    private static String handleFind(String input, TaskList tasks) {
         try {
             if (input.length() <= 5) {
                 throw new EmptyTaskException("OOPS!! The keyword for find cannot be empty.");
             }
+
             String keyword = input.substring(5).trim();
-            TaskList foundTasks = taskList.findTask(keyword);
-            ui.showFoundTasks(foundTasks);
+            TaskList foundTasks = tasks.findTask(keyword);
+            return (foundTasks.getSize() == 0 ) ? "No matching tasks found."
+                    : "Here are the matching tasks:\n" + foundTasks.getListString();
         } catch (Exception e) {
-            ui.showErrorMessage("No task found... please try again.");
+            return "No task found... please try again.";
         }
+    }
+
+    private static String handleExit(TaskList tasks, Storage storage) {
+        try {
+            storage.saveTasks(tasks.getAllTasks());
+            return "Goodbye! See you next time!";
+        } catch (IOException e) {
+            return "Sorry, but your tasks could not be saved...";
+        }
+    }
+
+    private static int getTaskIndex(String input, int prefixLength) {
+        return Integer.parseInt(input.substring(prefixLength).trim()) - 1;
+    }
+
+    private static String getTaskAddedMessage(Task task, TaskList tasks) {
+        return "Got it. I've added this task:\n" + task.getTaskString() + "\nNow you have " + tasks.getSize() + " tasks in the list.";
     }
 }
