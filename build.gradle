@@ -29,16 +29,21 @@ test {
 }
 
 application {
-    mainClass.set("eunai.EunAi")
+    mainClass.set("Launcher")
 }
 
 shadowJar {
-    archiveBaseName = "duke"
+    archiveBaseName = "eunAI-jar"
     archiveClassifier = null
+    archiveFileName = "eunAI.jar"
 }
 
 checkstyle {
     toolVersion = '10.2'
+}
+
+repositories {
+    mavenCentral()
 }
 
 dependencies {
@@ -61,4 +66,5 @@ dependencies {
 
 run{
     standardInput = System.in
+    enableAssertions = true
 }

@@ -1,5 +1,4 @@
 import eunai.EunAi;
-import eunai.command.Command;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
