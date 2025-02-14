@@ -31,9 +31,11 @@ public class Command {
      * @param storage The {@link Storage} object to handle task persistence.
      */
     public static String execute(String input, TaskList tasks, Ui ui, Storage storage) {
+        assert input != null : "input should not be null";
+        assert tasks != null : "tasks should not be null";
+        assert ui != null : "ui should not be null";
+        assert storage != null : "storage should not be null";
         CommandParser.Command commandType = CommandParser.parseCommand(input);
-        String response;
-
         switch (commandType) {
         case TODO:
             return handleTodo(input, tasks);
@@ -231,7 +233,10 @@ public class Command {
     }
 
     private static int getTaskIndex(String input, int prefixLength) {
-        return Integer.parseInt(input.substring(prefixLength).trim()) - 1;
+        assert input.length() > prefixLength : "input should be long enough to contain a task number";
+        int index = Integer.parseInt(input.substring(prefixLength).trim()) - 1;
+        assert index >= 0 : "task index should not be negative";
+        return index;
     }
 
     private static String getTaskAddedMessage(Task task, TaskList tasks) {

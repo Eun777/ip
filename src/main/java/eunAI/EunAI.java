@@ -21,6 +21,7 @@ public class EunAi {
      * @param filePath The file path where tasks are stored and loaded from.
      */
     public EunAi(String filePath) {
+        assert filePath != null && !filePath.isEmpty() : "filePath should not be null or empty";
         ui = new Ui();
         storage = new Storage(filePath);
         taskList = new TaskList(storage.loadSavedTasks());
@@ -34,6 +35,7 @@ public class EunAi {
      * @return Response generated based on the command.
      */
     public String processUserInput(String input) {
+        assert input != null : "User input should not be null";
         return Command.execute(input, taskList, ui, storage);
     }
 
