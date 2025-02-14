@@ -35,7 +35,7 @@ public class EunAi {
      * @return Response generated based on the command.
      */
     public String processUserInput(String input) {
-        assert false : "Testing assertions";
+        assert input != null : "User input should not be null";
         return Command.execute(input, taskList, ui, storage);
     }
 
