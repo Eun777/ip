@@ -43,13 +43,13 @@ public class EunAi {
      */
     public void run() {
         ui.showWelcomeMessage();
-        boolean isExit = false;
 
-        while (!isExit) {
+        while (true) {
             String input = ui.readCommand();
             System.out.println(processUserInput(input));
+
             if (CommandParser.parseCommand(input) == CommandParser.Command.BYE) {
-                isExit = true;
+                break;
             }
         }
     }
