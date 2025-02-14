@@ -33,9 +33,8 @@ public class DateParser {
      */
     public static LocalDateTime parseDate(String dateInput) {
         for (String format : DATE_FORMATS) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
             try {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
-
                 if (format.contains("HHmm") || format.contains("HH:mm")) {
                     return LocalDateTime.parse(dateInput, formatter);
                 } else {
@@ -55,6 +54,9 @@ public class DateParser {
      * @return A formatted date-time String.
      */
     public static String formatDate(LocalDateTime dateTime) {
+        if (dateTime == null) {
+            throw new IllegalArgumentException("Cannot format null date.");
+        }
         DateTimeFormatter displayFormatter = DateTimeFormatter.ofPattern("MMM d, yyyy hh:mm a");
         return dateTime.format(displayFormatter);
     }

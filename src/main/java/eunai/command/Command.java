@@ -68,11 +68,7 @@ public class Command {
      */
     private static String handleTodo(String input, TaskList tasks) {
         try {
-            if (input.length() <= 5) {
-                throw new EmptyTaskException("OOPS!!! The description of a todo cannot be empty.");
-            }
-
-            String description = input.substring(5).trim();
+            String description = extractTodoDescription(input);
             Task newTask = new ToDo(description, false);
             tasks.addTask(newTask);
             return getTaskAddedMessage(newTask, tasks);
@@ -80,6 +76,14 @@ public class Command {
             return e.getMessage();
         }
     }
+
+    private static String extractTodoDescription(String input) throws EmptyTaskException {
+        if (input.length() <= 5) {
+            throw new EmptyTaskException("OOPS!!! The description of a todo cannot be empty.");
+        }
+        return input.substring(5).trim();
+    }
+
 
     /**
      * Handles the addition of a {@link Deadline} task.
@@ -89,11 +93,7 @@ public class Command {
      */
     private static String handleDeadline(String input, TaskList tasks) {
         try {
-            String[] parts = input.substring(9).trim().split(" /by ");
-            if (parts.length < 2) {
-                throw new EmptyTaskException("OOPS!!! The description of a deadline cannot be empty.");
-            }
-
+            String[] parts = extractDeadlineDetails(input);
             Task newTask = new Deadline(parts[0], false, parts[1]);
             tasks.addTask(newTask);
             return getTaskAddedMessage(newTask, tasks);
@@ -101,6 +101,15 @@ public class Command {
             return e.getMessage();
         }
     }
+
+    private static String[] extractDeadlineDetails(String input) throws EmptyTaskException {
+        String[] parts = input.substring(9).trim().split(" /by ");
+        if (parts.length < 2) {
+            throw new EmptyTaskException("OOPS!!! The description of a deadline cannot be empty.");
+        }
+        return parts;
+    }
+
 
     /**
      * Handles the addition of an {@link Event} task.
@@ -140,13 +149,19 @@ public class Command {
      */
     private static String handleMark(String input, TaskList tasks) {
         try {
-            int index = getTaskIndex(input, 5);
-            tasks.getTask(index).markTask();
-            return "Nice! I've marked this task as done:\n" + tasks.getTask(index).getTaskString();
+            Task task = getTaskFromInput(input, tasks, 5);
+            task.markTask();
+            return "Nice! I've marked this task as done:\n" + task.getTaskString();
         } catch (Exception e) {
             return "Please enter a valid task number after 'mark'.";
         }
     }
+
+    private static Task getTaskFromInput(String input, TaskList tasks, int prefixLength) {
+        int index = getTaskIndex(input, prefixLength);
+        return tasks.getTask(index);
+    }
+
 
     /**
      * Marks a task as not completed.
@@ -156,13 +171,14 @@ public class Command {
      */
     private static String handleUnmark(String input, TaskList tasks) {
         try {
-            int index = getTaskIndex(input, 7);
-            tasks.getTask(index).unmarkTask();
-            return "OK, I've marked this task as not done yet:\n" + tasks.getTask(index).getTaskString();
+            Task task = getTaskFromInput(input, tasks, 7);
+            task.unmarkTask();
+            return "OK, I've marked this task as not done yet:\n" + task.getTaskString();
         } catch (Exception e) {
             return "Please enter a valid task number after 'unmark'.";
         }
     }
+
     /**
      * Deletes a task from the task list.
      *
@@ -171,10 +187,9 @@ public class Command {
      */
     private static String handleDelete(String input, TaskList tasks) {
         try {
-            int index = getTaskIndex(input, 7);
-            Task deletedTask = tasks.getTask(index);
-            tasks.deleteTask(index);
-            return "Noted. I've removed this task:\n" + deletedTask.getTaskString()
+            Task task = getTaskFromInput(input, tasks, 7);
+            tasks.deleteTask(getTaskIndex(input, 7)); // Still need index to delete
+            return "Noted. I've removed this task:\n" + task.getTaskString()
                     + "\nNow you have " + tasks.getSize() + " tasks in the list.";
         } catch (Exception e) {
             return "Please enter a valid task number to delete.";
@@ -189,46 +204,46 @@ public class Command {
      */
     private static String handleFind(String input, TaskList tasks) {
         try {
-            if (input.length() <= 5) {
-                throw new EmptyTaskException("OOPS!! The keyword for find cannot be empty.");
-            }
-
-            String keyword = input.substring(5).trim();
-            TaskList foundTasks = new TaskList();
-
-            // Check for specific task type filtering
-            switch (keyword.toLowerCase()) {
-            case "<todo>":
-                foundTasks = tasks.filterByType("T");
-                break;
-            case "<deadline>":
-                foundTasks = tasks.filterByType("D");
-                break;
-            case "<event>":
-                foundTasks = tasks.filterByType("E");
-                break;
-            default:
-                foundTasks = tasks.findTask(keyword); // Normal keyword search
-                break;
-            }
+            String keyword = extractFindKeyword(input);
+            TaskList foundTasks = filterTasksByKeyword(tasks, keyword);
 
             if (foundTasks.getSize() == 0) {
                 return "Hmm, no tasks match that search. Try again!";
             }
-
             return "Found " + foundTasks.getSize() + " matching task(s):\n" + foundTasks.getListString();
         } catch (Exception e) {
             return "Invalid search. Please provide a keyword or task type after 'find'.";
         }
     }
 
+    private static String extractFindKeyword(String input) throws EmptyTaskException {
+        if (input.length() <= 5) {
+            throw new EmptyTaskException("OOPS!! The keyword for find cannot be empty.");
+        }
+        return input.substring(5).trim();
+    }
+
+    private static TaskList filterTasksByKeyword(TaskList tasks, String keyword) {
+        switch (keyword.toLowerCase()) {
+        case "<todo>":
+            return tasks.filterByType("T");
+        case "<deadline>":
+            return tasks.filterByType("D");
+        case "<event>":
+            return tasks.filterByType("E");
+        default:
+            return tasks.findTask(keyword);
+        }
+    }
+
+
 
     private static String handleExit(TaskList tasks, Storage storage) {
         try {
             storage.saveTasks(tasks.getAllTasks());
-            return "Goodbye! See you next time!";
+            return "Goodbye! Your tasks have been saved. See you next time!";
         } catch (IOException e) {
-            return "Sorry, but your tasks could not be saved...";
+            return "Sorry, but your tasks could not be saved. Any changes may be lost.";
         }
     }
 
