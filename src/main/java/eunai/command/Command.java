@@ -35,6 +35,11 @@ public class Command {
         assert tasks != null : "tasks should not be null";
         assert ui != null : "ui should not be null";
         assert storage != null : "storage should not be null";
+
+        if (input.contains(",")) {
+            return handleMassOps(input, tasks);
+        }
+
         CommandParser.Command commandType = CommandParser.parseCommand(input);
         switch (commandType) {
         case TODO:
@@ -58,6 +63,79 @@ public class Command {
         default:
             return "Hmm, I don't understand what this means.";
         }
+    }
+
+    /**
+     * Handles mass operations for marking, unmarking, and deleting multiple tasks at once.
+     * <p>
+     * This method processes commands where multiple task indices are provided, separated by commas.
+     *
+     * @param input The user's command string (e.g., {@code "delete 1, 2, 3"}).
+     * @param tasks The {@link TaskList} that stores the current tasks.
+     * @return A formatted string describing the outcome of the operation.
+     */
+    public static String handleMassOps(String input, TaskList tasks) {
+        CommandParser.Command commandType = CommandParser.parseCommand(input);
+        String[] taskIndices = extractTaskIndices(input, commandType);
+        StringBuilder result = new StringBuilder();
+
+        for (String indexStr : taskIndices) {
+            processMassOperation(commandType, indexStr.trim(), tasks, result);
+        }
+
+        return finalizeMassOpsResult(commandType, tasks, result);
+    }
+
+    private static String[] extractTaskIndices(String input, CommandParser.Command commandType) {
+        int prefixLength = getCommandPrefixLength(commandType);
+        return input.substring(prefixLength).trim().split("\\s*,\\s*");
+    }
+
+    private static int getCommandPrefixLength(CommandParser.Command commandType) {
+        switch (commandType) {
+        case MARK:
+            return 5;
+        case UNMARK:
+            return 7;
+        case DELETE:
+            return 7;
+        default: throw new IllegalArgumentException("Invalid mass operation command.");
+        }
+    }
+
+    private static void processMassOperation(CommandParser.Command commandType, String indexStr,
+                                             TaskList tasks, StringBuilder result) {
+        try {
+            int index = Integer.parseInt(indexStr) - 1;
+            Task task = tasks.getTask(index);
+
+            switch (commandType) {
+            case MARK:
+                task.markTask();
+                result.append("Marked task as done:\n").append(task.getTaskString()).append("\n");
+                break;
+            case UNMARK:
+                task.unmarkTask();
+                result.append("Unmarked task:\n").append(task.getTaskString()).append("\n");
+                break;
+            case DELETE:
+                tasks.deleteTask(index);
+                result.append("Deleted task:\n").append(task.getTaskString()).append("\n");
+                break;
+            default:
+                break;
+            }
+        } catch (Exception e) {
+            result.append("Skipped invalid task number: ").append(indexStr).append("\n");
+        }
+    }
+
+    private static String finalizeMassOpsResult(CommandParser.Command commandType,
+                                                TaskList tasks, StringBuilder result) {
+        if (commandType == CommandParser.Command.DELETE) {
+            result.append("Now you have ").append(tasks.getSize()).append(" tasks in the list.");
+        }
+        return result.toString();
     }
 
     /**
