@@ -37,7 +37,7 @@ public class Command {
         assert storage != null : "storage should not be null";
 
         if (input.contains(",")) {
-            return handleMassOps(input, tasks, ui, storage);
+            return handleMassOps(input, tasks);
         }
 
         CommandParser.Command commandType = CommandParser.parseCommand(input);
@@ -72,65 +72,70 @@ public class Command {
      *
      * @param input The user's command string (e.g., {@code "delete 1, 2, 3"}).
      * @param tasks The {@link TaskList} that stores the current tasks.
-     * @param ui The {@link Ui} object for user interaction (not used in this method).
-     * @param storage The {@link Storage} object for saving tasks (not used in this method).
      * @return A formatted string describing the outcome of the operation.
      */
-    public static String handleMassOps(String input, TaskList tasks, Ui ui, Storage storage) {
+    public static String handleMassOps(String input, TaskList tasks) {
         CommandParser.Command commandType = CommandParser.parseCommand(input);
-        String[] parts;
+        String[] taskIndices = extractTaskIndices(input, commandType);
         StringBuilder result = new StringBuilder();
 
+        for (String indexStr : taskIndices) {
+            processMassOperation(commandType, indexStr.trim(), tasks, result);
+        }
+
+        return finalizeMassOpsResult(commandType, tasks, result);
+    }
+
+    private static String[] extractTaskIndices(String input, CommandParser.Command commandType) {
+        int prefixLength = getCommandPrefixLength(commandType);
+        return input.substring(prefixLength).trim().split("\\s*,\\s*");
+    }
+
+    private static int getCommandPrefixLength(CommandParser.Command commandType) {
+        switch (commandType) {
+        case MARK:
+            return 5;
+        case UNMARK:
+            return 7;
+        case DELETE:
+            return 7;
+        default: throw new IllegalArgumentException("Invalid mass operation command.");
+        }
+    }
+
+    private static void processMassOperation(CommandParser.Command commandType, String indexStr,
+                                             TaskList tasks, StringBuilder result) {
         try {
+            int index = Integer.parseInt(indexStr) - 1;
+            Task task = tasks.getTask(index);
+
             switch (commandType) {
             case MARK:
-                parts = input.substring(5).trim().split("\\s*,\\s*");
-                for (String part : parts) {
-                    try {
-                        Task task = getTaskFromInput("mark " + part.trim(), tasks, 5);
-                        task.markTask();
-                        result.append("Marked task as done:\n").append(task.getTaskString()).append("\n");
-                    } catch (Exception e) {
-                        result.append("Skipped invalid task number: ").append(part.trim()).append("\n");
-                    }
-                }
-                return result.toString();
-
+                task.markTask();
+                result.append("Marked task as done:\n").append(task.getTaskString()).append("\n");
+                break;
             case UNMARK:
-                parts = input.substring(7).trim().split("\\s*,\\s*");
-                for (String part : parts) {
-                    try {
-                        Task task = getTaskFromInput("unmark " + part.trim(), tasks, 7);
-                        task.unmarkTask();
-                        result.append("Unmarked task:\n").append(task.getTaskString()).append("\n");
-                    } catch (Exception e) {
-                        result.append("Skipped invalid task number: ").append(part.trim()).append("\n");
-                    }
-                }
-                return result.toString();
-
+                task.unmarkTask();
+                result.append("Unmarked task:\n").append(task.getTaskString()).append("\n");
+                break;
             case DELETE:
-                parts = input.substring(7).trim().split("\\s*,\\s*");
-                // Process in reverse order to avoid index shifting problems
-                for (int i = parts.length - 1; i >= 0; i--) {
-                    try {
-                        int index = Integer.parseInt(parts[i].trim()) - 1;
-                        Task task = tasks.getTask(index);
-                        tasks.deleteTask(index);
-                        result.append("Deleted task:\n").append(task.getTaskString()).append("\n");
-                    } catch (Exception e) {
-                        result.append("Skipped invalid task number: ").append(parts[i].trim()).append("\n");
-                    }
-                }
-                result.append("Now you have ").append(tasks.getSize()).append(" tasks in the list.");
-                return result.toString();
-
+                tasks.deleteTask(index);
+                result.append("Deleted task:\n").append(task.getTaskString()).append("\n");
+                break;
             default:
-                return "Hmm, I don't understand what this means.";
+                break;
             }
         } catch (Exception e) {
-            return "Please provide valid task numbers separated by commas.";
+            result.append("Skipped invalid task number: ").append(indexStr).append("\n");
         }
+    }
+
+    private static String finalizeMassOpsResult(CommandParser.Command commandType,
+                                                TaskList tasks, StringBuilder result) {
+        if (commandType == CommandParser.Command.DELETE) {
+            result.append("Now you have ").append(tasks.getSize()).append(" tasks in the list.");
+        }
+        return result.toString();
     }
 
     /**
