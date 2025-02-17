@@ -11,6 +11,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.shape.Circle;
 
 /**
  * Represents a chat bubble for user and EunAI responses.
@@ -40,6 +41,11 @@ public class DialogBox extends HBox {
 
         dialog.setText(text);
         displayPicture.setImage(img);
+        displayPicture.setFitWidth(50);
+        displayPicture.setFitHeight(50);
+
+        Circle clip = new Circle(25, 25, 25); // (centerX, centerY, radius)
+        displayPicture.setClip(clip);
     }
 
     /**
