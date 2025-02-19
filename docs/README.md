@@ -8,6 +8,7 @@ EunAI supports 3 different types of tasks:
 - To do
 - Deadline
 - Event
+
 ## Adding To Dos, Deadlines and Events
 
 ### Adding To Dos
