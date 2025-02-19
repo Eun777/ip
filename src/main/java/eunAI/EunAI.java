@@ -36,7 +36,11 @@ public class EunAi {
      */
     public String processUserInput(String input) {
         assert input != null : "User input should not be null";
-        return Command.execute(input, taskList, ui, storage);
+        try {
+            return Command.execute(input, taskList, ui, storage);
+        } catch (Exception e) {
+            return "Oopsies! Something went wrong: " + e.getMessage();
+        }
     }
 
     /**
