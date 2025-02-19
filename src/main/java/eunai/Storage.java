@@ -33,17 +33,25 @@ public class Storage {
      * @param taskList The list of tasks to save.
      * @throws IOException If an I/O error occurs during writing.
      */
-    public void saveTasks(ArrayList<Task> taskList) throws IOException {
+
+    public boolean saveTasks(ArrayList<Task> taskList) {
         File file = new File(filePath);
         file.getParentFile().mkdirs();
-        FileWriter writer = new FileWriter(file);
 
-        for (int i = 0; i < taskList.size(); i++) {
-            writer.write(taskList.get(i).toFileFormat() + System.lineSeparator());
+        try (FileWriter writer = new FileWriter(file)) {
+            writeTasksToFile(writer, taskList);
+            return true; // Saving successful
+        } catch (IOException e) {
+            System.out.println("Error saving tasks. Your changes might not be saved.");
+            return false; // Saving failed
         }
+    }
 
-        writer.close();
-
+    // Extracted helper method
+    private void writeTasksToFile(FileWriter writer, ArrayList<Task> taskList) throws IOException {
+        for (Task task : taskList) {
+            writer.write(task.toFileFormat() + System.lineSeparator());
+        }
     }
 
     /**
@@ -56,17 +64,20 @@ public class Storage {
         File savedFile = new File(filePath);
 
         if (!savedFile.exists()) {
-            System.out.println("      You have not saved any information previously. Starting a new list...");
+            System.out.println("You have not saved any information previously. Starting a new list...");
             return prevTaskList;
         }
 
         try (BufferedReader reader = new BufferedReader(new FileReader(savedFile))) {
             String currLine;
             while ((currLine = reader.readLine()) != null) {
-                prevTaskList.add(parseTask(currLine));
+                Task task = parseTask(currLine);
+                if (task != null) { // Only add valid tasks
+                    prevTaskList.add(task);
+                }
             }
         } catch (IOException e) {
-            System.out.println("        Error loading tasks. Starting a new list...");
+            System.out.println("Error loading tasks. Starting a new list...");
         }
         return prevTaskList;
     }
@@ -78,21 +89,36 @@ public class Storage {
      */
     private Task parseTask(String line) {
         String[] splitParts = line.split(" \\| ");
+
+        if (splitParts.length < 3) {
+            System.out.println("Skipping invalid task format: " + line);
+            return null; // Skip bad lines instead of crashing
+        }
+
         String taskType = splitParts[0];
         boolean taskIsDone = splitParts[1].equals("1");
         String taskDescription = splitParts[2];
 
-        switch (taskType) {
-        case "T":
-            return new ToDo(taskDescription, taskIsDone);
-        case "D":
-            String taskDate = splitParts[3];
-            return new Deadline(taskDescription, taskIsDone, taskDate);
-        case "E":
-            return new Event(taskDescription, taskIsDone, splitParts[3], splitParts[4]);
-        default:
-            throw new IllegalArgumentException("    Invalid task format.");
+        try {
+            switch (taskType) {
+            case "T":
+                return new ToDo(taskDescription, taskIsDone);
+            case "D":
+                if (splitParts.length < 4) {
+                    throw new IllegalArgumentException();
+                }
+                return new Deadline(taskDescription, taskIsDone, splitParts[3]);
+            case "E":
+                if (splitParts.length < 5) {
+                    throw new IllegalArgumentException();
+                }
+                return new Event(taskDescription, taskIsDone, splitParts[3], splitParts[4]);
+            default:
+                throw new IllegalArgumentException();
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error parsing task: " + line);
+            return null;
         }
-
     }
 }
