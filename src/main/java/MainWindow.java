@@ -52,7 +52,7 @@ public class MainWindow extends AnchorPane {
     }
 
     private void showWelcomeMessage() {
-        String welcomeMessage = "Hello! I'm EunAI.\nHow can I assist you today?";
+        String welcomeMessage = "Hellooo, I'm EunAI! ✨\nWhat's up? Need some help or just here to vibe lol";
         dialogContainer.getChildren().add(DialogBox.getEunAiDialog(welcomeMessage, eunAiImage));
     }
 
