@@ -47,7 +47,7 @@ Marks the task at index 1 as done
 ```
 unmark 2
 ```
-Unmark the task at index 2 as done 
+Marks the task at index 2 as not done 
 
 ### Delete a task
 ```
@@ -73,6 +73,28 @@ find <event>
 ```
 Finds all Events
 
+## Others
+### Ending the chat
+```
+bye
+```
+Ends chat and closes EunAI task manager. Tasks are then saved locally.
+
+### Managing Multiple Tasks in One Command (Mark, Unmark, Delete)
+```
+delete 1, 3
+```
+Deletes tasks at index 1 and 3 (Indices need to be in ascending order)
+
+```
+mark 1, 3
+```
+Marks tasks at index 1 and 3 as done (Indices need to be in ascending order)
+```
+unmark 1, 3
+```
+Marks tasks at index 1 and 3 as not done (Indices need to be in ascending order)
+
 ## Supported Date Formats
 EunAI supports multiple date formats! For example,  
 "2 December 2019" can be written as:  
@@ -92,6 +114,7 @@ EunAI supports multiple date formats! For example,
 - `2019-12-02`  
 - `2019-12-02 18:00`  
 - `2019-12-02T18:00`  
-- `2025-02-01T00:00:00`  
+- `2025-02-01T00:00:00`
 
-Thats the features that EunAI has to offer FOR NOW! Look out for future updates where new features could be added 👀
+
+That's the features that EunAI has to offer FOR NOW! Look out for future updates where new features could be added 👀
