@@ -44,7 +44,8 @@ public class DateParser {
                 // Try the next format
             }
         }
-        throw new IllegalArgumentException("Invalid date format: " + dateInput);
+        throw new IllegalArgumentException("Invalid date format: " + dateInput
+                + " \n Prefered format: DD/MM/YYYY HHmm");
     }
 
     /**
