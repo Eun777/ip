@@ -17,29 +17,44 @@ import javafx.application.Platform;
 import javafx.util.Duration;
 
 /**
- * Handles the execution of user commands.
- * This class processes different types of commands (e.g., add, delete, mark, unmark)
- * and interacts with {@link TaskList}, {@link Ui}, and {@link Storage} to perform the
- * appropriate actions.
+ * Represents a handler for all user commands.
+ * It parses the command input and dispatches it to specific handlers
+ * (e.g., add, delete, mark, unmark).
  */
 public class Command {
 
+    /**
+     * Executes the user command string by determining whether it is a mass operation
+     * (comma-separated indices) or a single command, then routes to the appropriate method.
+     *
+     * @param input   The full user input command
+     * @param tasks   The TaskList managing the user's tasks
+     * @param ui      The Ui object for user interaction
+     * @param storage The Storage object for saving/loading tasks
+     * @return A response message indicating the result of the command
+     */
     public static String execute(String input, TaskList tasks, Ui ui, Storage storage) {
         assert input != null : "input should not be null";
         assert tasks != null : "tasks should not be null";
         assert ui != null : "ui should not be null";
         assert storage != null : "storage should not be null";
-
-        // Check if it's a mass operation (commas in input)
         if (input.contains(",")) {
             return handleMassOps(input, tasks);
         }
-
-        // Otherwise, single command execution
         CommandParser.Command commandType = CommandParser.parseCommand(input);
         return routeCommand(commandType, input, tasks, ui, storage);
     }
 
+    /**
+     * Routes the parsed command type to the corresponding handler method.
+     *
+     * @param commandType The parsed command type from the user input
+     * @param input       The raw user input string
+     * @param tasks       The TaskList containing tasks
+     * @param ui          The Ui for user interaction
+     * @param storage     The Storage for saving/loading tasks
+     * @return A result message describing the outcome of the operation
+     */
     private static String routeCommand(CommandParser.Command commandType, String input,
                                        TaskList tasks, Ui ui, Storage storage) {
         switch (commandType) {
@@ -68,20 +83,21 @@ public class Command {
     }
 
     /**
-     * Improved handleMassOps: parse all indices, sort in descending order, then apply operations.
+     * Handles mass operations such as "delete 2,5,6" or "mark 1,2,4" by parsing all indices,
+     * sorting them in descending order, and applying the requested operation.
+     *
+     * @param input The user command string containing the operation and comma-separated indices
+     * @param tasks The TaskList that stores the user's tasks
+     * @return A result message detailing processed tasks and skipped invalid indices
      */
     public static String handleMassOps(String input, TaskList tasks) {
         CommandParser.Command commandType = CommandParser.parseCommand(input);
         int prefixLength = getCommandPrefixLength(commandType);
-
-        // 1. Extract the part after the command word
         String indicesPart = input.substring(prefixLength).trim();
         String[] rawIndices = indicesPart.split("\\s*,\\s*");
 
-        // 2. Parse and collect valid indices, track invalid
         List<Integer> validIndices = new ArrayList<>();
         List<String> invalidIndices = new ArrayList<>();
-
         for (String indexStr : rawIndices) {
             try {
                 int userIndex = Integer.parseInt(indexStr);
@@ -90,18 +106,13 @@ public class Command {
                 } else if (userIndex > tasks.getSize()) {
                     invalidIndices.add(indexStr + " (out of range)");
                 } else {
-                    // Convert user-facing index to zero-based
                     validIndices.add(userIndex - 1);
                 }
             } catch (NumberFormatException e) {
                 invalidIndices.add(indexStr + " (not a valid number)");
             }
         }
-
-        // 3. Sort valid indices descending
         validIndices.sort(Collections.reverseOrder());
-
-        // 4. Apply operations in descending order
         StringBuilder result = new StringBuilder();
         for (int idx : validIndices) {
             Task task = tasks.getTask(idx);
@@ -125,16 +136,12 @@ public class Command {
                 break;
             }
         }
-
-        // 5. Summarize invalid indices
         if (!invalidIndices.isEmpty()) {
-            result.append("\nSkipped invalid task numbers: \n");
+            result.append("\nSkipped invalid task numbers:\n");
             for (String bad : invalidIndices) {
                 result.append("  - ").append(bad).append("\n");
             }
         }
-
-        // 6. Final message if it's a DELETE
         if (commandType == CommandParser.Command.DELETE) {
             result.append("\nNow you have ").append(tasks.getSize()).append(" tasks in the list.");
         }
@@ -142,6 +149,14 @@ public class Command {
         return result.toString().trim();
     }
 
+    /**
+     * Gets the length of the command prefix for mass operations
+     * (e.g., "mark ", "unmark ", "delete ").
+     *
+     * @param commandType The type of mass operation command
+     * @return The integer length to substring away from the user input
+     * @throws IllegalArgumentException If the command is not a valid mass operation
+     */
     private static int getCommandPrefixLength(CommandParser.Command commandType) {
         switch (commandType) {
         case MARK:
@@ -153,8 +168,13 @@ public class Command {
         }
     }
 
-    /* ======================= Single-Command Handlers Below ======================= */
-
+    /**
+     * Handles creation of a new ToDo task from user input (e.g., "todo read a book").
+     *
+     * @param input The full user command
+     * @param tasks The TaskList where the new task is added
+     * @return A message showing the added task or an error message if invalid
+     */
     private static String handleTodo(String input, TaskList tasks) {
         try {
             String description = extractTodoDescription(input);
@@ -166,6 +186,13 @@ public class Command {
         }
     }
 
+    /**
+     * Extracts the ToDo description from a user input (e.g., "todo read a book").
+     *
+     * @param input The full user command
+     * @return The parsed description
+     * @throws EmptyTaskException If the user did not provide any description
+     */
     private static String extractTodoDescription(String input) throws EmptyTaskException {
         if (input.length() <= 5) {
             throw new EmptyTaskException("OOPS!!! The description of a todo cannot be empty.");
@@ -173,6 +200,14 @@ public class Command {
         return input.substring(5).trim();
     }
 
+    /**
+     * Handles creation of a new Deadline task from user input
+     * (e.g., "deadline finish project /by 2025-02-28").
+     *
+     * @param input The full user command containing description and /by part
+     * @param tasks The TaskList where the new task is added
+     * @return A message showing the added deadline or an error if invalid
+     */
     private static String handleDeadline(String input, TaskList tasks) {
         try {
             String[] parts = extractDeadlineDetails(input);
@@ -186,6 +221,13 @@ public class Command {
         }
     }
 
+    /**
+     * Extracts the description and date/time for a deadline command.
+     *
+     * @param input The user command (e.g., "deadline finish /by tomorrow")
+     * @return A string array with two elements: [description, byDateTime]
+     * @throws EmptyTaskException If either the description or date/time is missing
+     */
     private static String[] extractDeadlineDetails(String input) throws EmptyTaskException {
         String[] parts = input.substring(9).trim().split(" /by ", 2);
         if (parts.length < 2 || parts[0].isBlank() || parts[1].isBlank()) {
@@ -196,6 +238,14 @@ public class Command {
         return parts;
     }
 
+    /**
+     * Handles creation of a new Event task from user input
+     * (e.g., "event meeting /from 2pm /to 4pm").
+     *
+     * @param input The full user command containing description, /from, and /to parts
+     * @param tasks The TaskList where the new event is added
+     * @return A message showing the added event or an error if invalid
+     */
     private static String handleEvent(String input, TaskList tasks) {
         try {
             String[] parts = input.substring(6).trim().split(" /from | /to ");
@@ -214,40 +264,67 @@ public class Command {
         }
     }
 
+    /**
+     * Lists all tasks in the user's task list.
+     *
+     * @param tasks The TaskList storing the user's tasks
+     * @return The formatted list of tasks or a message if empty
+     */
     private static String handleList(TaskList tasks) {
         return (tasks.getSize() == 0)
                 ? "Your task list is empty. Why not add some tasks?"
                 : tasks.getListString();
     }
 
+    /**
+     * Marks a specified task (by index) as done.
+     *
+     * @param input The user command (e.g., "mark 2")
+     * @param tasks The TaskList storing tasks
+     * @return A success message if valid or an error message if invalid
+     */
     private static String handleMark(String input, TaskList tasks) {
         try {
             Task task = getTaskFromInput(input, tasks, 5);
             task.markTask();
             return "Great job! I've marked this task as done:\n" + task.getTaskString();
         } catch (NumberFormatException nfe) {
-            return "Error: Please enter a valid number after 'mark'. e.g. 'mark 2'";
+            return "Oh no...Please enter a valid number after 'mark'. e.g. 'mark 2'";
         } catch (IndexOutOfBoundsException ioobe) {
-            return "Error: The task number is out of range. Check your list with 'list'.";
+            return "Uhhh the task number is out of range. Check your list with 'list'.";
         } catch (Exception e) {
-            return "Error: Unable to mark. Please enter a valid task number. e.g. 'mark 2'";
+            return "Welp! Unable to mark. Please enter a valid task number. e.g. 'mark 2'";
         }
     }
 
+    /**
+     * Marks a specified task (by index) as not done.
+     *
+     * @param input The user command (e.g., "unmark 3")
+     * @param tasks The TaskList storing tasks
+     * @return A success message if valid or an error message if invalid
+     */
     private static String handleUnmark(String input, TaskList tasks) {
         try {
             Task task = getTaskFromInput(input, tasks, 7);
             task.unmarkTask();
             return "Alright, I've marked this task as NOT done:\n" + task.getTaskString();
         } catch (NumberFormatException nfe) {
-            return "Error: Please enter a valid number after 'unmark'. e.g. 'unmark 3'";
+            return "Oh no...Please enter a valid number after 'unmark'. e.g. 'unmark 3'";
         } catch (IndexOutOfBoundsException ioobe) {
-            return "Error: The task number is out of range. Check your list with 'list'.";
+            return "Uhhh the task number is out of range. Check your list with 'list'.";
         } catch (Exception e) {
-            return "Error: Unable to unmark. Please enter a valid task number. e.g. 'unmark 3'";
+            return "Welp! Unable to unmark. Please enter a valid task number. e.g. 'unmark 3'";
         }
     }
 
+    /**
+     * Deletes a specified task (by index) from the user's task list.
+     *
+     * @param input The user command (e.g., "delete 2")
+     * @param tasks The TaskList storing tasks
+     * @return A success message if valid or an error message if invalid
+     */
     private static String handleDelete(String input, TaskList tasks) {
         try {
             int index = getTaskIndex(input, 7);
@@ -256,14 +333,21 @@ public class Command {
             return "I've removed this task:\n" + task.getTaskString()
                     + "\nNow you have " + tasks.getSize() + " tasks in the list.";
         } catch (NumberFormatException nfe) {
-            return "Error: Please enter a valid number after 'delete'. e.g. 'delete 2'";
+            return "Oh no...Please enter a valid number after 'delete'. e.g. 'delete 2'";
         } catch (IndexOutOfBoundsException ioobe) {
-            return "Error: That task number is out of range. Check your list with 'list'.";
+            return "Uhhh that task number is out of range. Check your list with 'list'.";
         } catch (Exception e) {
-            return "Error: Unable to delete. Please enter a valid task number. e.g. 'delete 2'";
+            return "Welp! Unable to delete. Please enter a valid task number. e.g. 'delete 2'";
         }
     }
 
+    /**
+     * Finds tasks that match a keyword or a special marker.
+     *
+     * @param input The user command - find
+     * @param tasks The TaskList containing tasks
+     * @return A list of matching tasks or an error message if the search is invalid
+     */
     private static String handleFind(String input, TaskList tasks) {
         try {
             String keyword = extractFindKeyword(input);
@@ -279,10 +363,18 @@ public class Command {
                     + "Alternatively, find <task-type> using <todo>, <deadline>, or <event>.\n"
                     + "e.g. 'find <deadline>'";
         } catch (Exception e) {
-            return "Error: Invalid search. Please provide a keyword after 'find'. e.g. 'find homework'";
+            return "Sorry manz, that was an invalid search."
+                    + "Please provide a keyword after 'find'. e.g. 'find homework'";
         }
     }
 
+    /**
+     * Extracts the keyword for a find operation from the user command.
+     *
+     * @param input The user command (e.g., "find meeting")
+     * @return The keyword string
+     * @throws EmptyTaskException If no keyword is provided after "find "
+     */
     private static String extractFindKeyword(String input) throws EmptyTaskException {
         if (input.length() <= 5) {
             throw new EmptyTaskException("Oops! The keyword for 'find' cannot be empty.");
@@ -290,6 +382,13 @@ public class Command {
         return input.substring(5).trim();
     }
 
+    /**
+     * Filters tasks by a task types or descriptions by substring.
+     *
+     * @param tasks   The TaskList containing all tasks
+     * @param keyword The keyword or special type indicator
+     * @return A TaskList of matching tasks
+     */
     private static TaskList filterTasksByKeyword(TaskList tasks, String keyword) {
         switch (keyword.toLowerCase()) {
         case "<todo>":
@@ -303,13 +402,21 @@ public class Command {
         }
     }
 
+    /**
+     * Handles the exit command by saving tasks to storage and scheduling
+     * the application to exit shortly.
+     *
+     * @param tasks   The TaskList containing tasks
+     * @param storage The Storage for saving tasks
+     * @return A farewell message indicating whether tasks were saved
+     */
     private static String handleExit(TaskList tasks, Storage storage) {
         boolean isSaved = storage.saveTasks(tasks.getAllTasks());
         if (!isSaved) {
             return "Oops! I couldn't save your tasks. Something went wrong. Please try again.";
         }
 
-        // Delay before exiting (for JavaFX usage)
+        // Delay before exiting (useful in JavaFX applications)
         PauseTransition delay = new PauseTransition(Duration.seconds(2));
         delay.setOnFinished(event -> Platform.exit());
         delay.play();
@@ -317,11 +424,30 @@ public class Command {
         return "Byeee! I've successfully saved your tasks. See you next time!";
     }
 
+    /**
+     * Retrieves a task from the TaskList by parsing the index from a user command substring.
+     *
+     * @param input        The user command (e.g., "mark 2")
+     * @param tasks        The TaskList containing tasks
+     * @param prefixLength The length of the command prefix to strip away
+     * @return The Task at the parsed zero-based index
+     * @throws NumberFormatException     If the substring cannot be parsed as an integer
+     * @throws IndexOutOfBoundsException If the index is negative or out of range
+     */
     private static Task getTaskFromInput(String input, TaskList tasks, int prefixLength) {
         int index = getTaskIndex(input, prefixLength);
         return tasks.getTask(index);
     }
 
+    /**
+     * Parses and adjusts the index from user input (1-based) to zero-based.
+     *
+     * @param input        The user command (e.g., "delete 3")
+     * @param prefixLength Number of characters to skip (e.g., length of "delete ")
+     * @return The zero-based index
+     * @throws NumberFormatException     If the substring is not an integer
+     * @throws IndexOutOfBoundsException If the index is negative
+     */
     private static int getTaskIndex(String input, int prefixLength) {
         int index = Integer.parseInt(input.substring(prefixLength).trim()) - 1;
         if (index < 0) {
@@ -330,6 +456,14 @@ public class Command {
         return index;
     }
 
+    /**
+     * Constructs a message confirming that a new task has been added and displaying
+     * the current number of tasks in the list.
+     *
+     * @param task  The newly created Task
+     * @param tasks The TaskList containing the newly added task
+     * @return A success message showing the task and updated list size
+     */
     private static String getTaskAddedMessage(Task task, TaskList tasks) {
         return "Done! I've added this task:\n" + task.getTaskString()
                 + "\nNow you have " + tasks.getSize() + " tasks in the list.";
