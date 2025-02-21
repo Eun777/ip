@@ -84,16 +84,15 @@ Ends chat and closes EunAI task manager. Tasks are then saved locally.
 ```
 delete 1, 3
 ```
-Deletes tasks at index 1 and 3 (Indices need to be in ascending order)
-
+Deletes tasks at index 1 and 3
 ```
 mark 1, 3
 ```
-Marks tasks at index 1 and 3 as done (Indices need to be in ascending order)
+Marks tasks at index 1 and 3 as done
 ```
 unmark 1, 3
 ```
-Marks tasks at index 1 and 3 as not done (Indices need to be in ascending order)
+Marks tasks at index 1 and 3 as not done
 
 ## Supported Date Formats
 EunAI supports multiple date formats! For example,  
