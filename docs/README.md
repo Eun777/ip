@@ -1,4 +1,5 @@
 # EunAI User Guide ✨✨✨
+![Screenshot of the UI](Ui.png)
 
 Welcome EunAI - your all in one task manager. EunAI isn’t just another reminders app or notebook but a powerful task manager so you can focus on what you enjoy without stressing over your to-do list. 
 
